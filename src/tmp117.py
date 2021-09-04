@@ -1,20 +1,27 @@
+from typing import Optional
 import adafruit_tmp117
+import typing
 import board
 
 
 class TMP117:
-    def __init__(self, addresses):
+    def __init__(self, addresses: typing.Union[int, list[int]] ):
+        """Initialize the sensor.
+
+        Args:
+            addresses ([list[int]]): [List or value containing the different sensor addresses.]
+        """
         i2c = board.I2C()
-        sensors = []
-        for addr in addresses:
-            sensors.append(adafruit_tmp117.TMP117(i2c, addr))
+        sensors = [adafruit_tmp117.TMP117(i2c, addr) for addr in addresses]
         self.sensors = sensors
 
     def collect_data(self):
-        data = []
-        for sensor in self.sensors:
-            data.append(sensor.temperature)
-        return data
+        """Return a list of all the temperature reading from the different sensors .
+
+        Returns:
+            [type]: [description]
+        """
+        return [sensor.temperature for sensor in self.sensors]
 
 if __name__ == "__main__":
     addresses = [0x48]
