@@ -11,6 +11,15 @@ class mlx90640:
         INTERPOLATE=10,
         REFRESH_RATE=0b000,
     ):
+        """Initialize the adafruit board .
+
+        Args:
+            MINTEMP (float, optional): [description]. Defaults to 25.0.
+            MAXTEMP (float, optional): [description]. Defaults to 45.0.
+            COLORDEPTH (int, optional): [description]. Defaults to 1000.
+            INTERPOLATE (int, optional): [description]. Defaults to 10.
+            REFRESH_RATE ([type], optional): [description]. Defaults to 0b000.
+        """
         self.MINTEMP = MINTEMP
         self.MAXTEMP = MAXTEMP
         self.COLORDEPTH = COLORDEPTH
@@ -35,6 +44,14 @@ class mlx90640:
 
     @staticmethod
     def __frame(camera):
+        """Get a frame from the camera .
+
+        Args:
+            camera ([type]): [description]
+
+        Returns:
+            [type]: [description]
+        """
         success = False
         while not success:
             frame = [0] * 768
