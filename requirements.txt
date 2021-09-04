@@ -1,0 +1,2 @@
+adafruit-circuitpython-tmp117
+adafruit-circuitpython-mlx90640
