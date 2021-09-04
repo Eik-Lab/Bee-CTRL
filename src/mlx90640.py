@@ -80,14 +80,23 @@ class mlx90640:
 
     
     def __create_rgb_image(self):
+        """
+        Transform the image to a new RGB image
+        """
         self.__frame()
         self.__transform()
         self.rgb_image = Image.new("RGB", (32, 24))
 
 
     def save_rgb_image(self, filename):
+        """
+        Save the current color image to a PNG file .
+        Args:
+            filename ([type]): [description]
+        """
         img = self.rgb_image.transpose(Image.FLIP_TOP_BOTTOM)
-        img = img.resize((32 * INTERPOLATE, 24 * INTERPOLATE), Image.BICUBIC)
+        del self.rgb_image
+        img = img.resize((32 * self.INTERPOLATE, 24 * self.INTERPOLATE), Image.BICUBIC)
         img.save(f"{filename}.jpg")
 
 
