@@ -1,6 +1,7 @@
 import adafruit_mlx90640
 import board
 import utils
+from PIL import Image
 
 class mlx90640:
     def __init__(
@@ -42,8 +43,7 @@ class mlx90640:
             colormap[i] = utils.gradient(i, self.COLORDEPTH, heatmap)
         self.colormap = colormap
 
-    @staticmethod
-    def __frame(camera):
+    def __frame(self):
         """Get a frame from the camera .
 
         Args:
@@ -56,12 +56,12 @@ class mlx90640:
         while not success:
             frame = [0] * 768
             try:
-                camera.getFrame(frame)
+                self.camera.getFrame(frame)
             except ValueError:
                 continue
-            return frame
+            self.frame = frame
 
-    def __transform(self, frame: list[int]):
+    def __transform(self):
         """Transform the pixel to the pixel map .
 
         Args:
@@ -70,26 +70,27 @@ class mlx90640:
         Returns:
             [list[int]]: [list containing the transformed frame]
         """
-        frame = self.__frame(self.camera)
         pixels = [0] * 786
-        for i, pixel in enumerate(frame):
+        for i, pixel in enumerate(self.__frame):
                 coloridx = utils.map_value(pixel, self.MINTEMP, self.MAXTEMP, 0, self.COLORDEPTH - 1)
                 coloridx = int(utils.constrain(coloridx, 0, self.COLORDEPTH - 1))
                 pixels[i] = self.colormap[coloridx]
-        return pixels
+        self.pixels = pixels
 
-    def image():
-        pass
 
-    def collect_raw_frame(self):
-        """Collect raw frame data from the camera .
-        """
-        self.raw_data = self.__frame(self.camera)
+    
+    def __create_rgb_image(self):
+        self.__frame()
+        self.__transform()
+        self.rgb_image = Image.new("RGB", (32, 24))
 
-    def print_raw_data(self):
-        """Print the raw data to stdout .
-        """
-        print(self.raw_data)
+
+    def save_rgb_image(self, filename):
+        img = self.rgb_image.transpose(Image.FLIP_TOP_BOTTOM)
+        img = img.resize((32 * INTERPOLATE, 24 * INTERPOLATE), Image.BICUBIC)
+        img.save(f"{filename}.jpg")
+
+
 
 if __name__ == "__main__":
     mlx = mlx90640()
