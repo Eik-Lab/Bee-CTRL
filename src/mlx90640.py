@@ -1,6 +1,7 @@
 import adafruit_mlx90640
 import board
 import utils
+import numpy as np
 from PIL import Image
 
 class mlx90640:
@@ -57,6 +58,7 @@ class mlx90640:
             frame = [0] * 768
             try:
                 self.camera.getFrame(frame)
+                success = True
             except ValueError:
                 continue
             self.frame = frame
@@ -70,8 +72,8 @@ class mlx90640:
         Returns:
             [list[int]]: [list containing the transformed frame]
         """
-        pixels = [0] * 786
-        for i, pixel in enumerate(self.__frame):
+        pixels = [0] * 768
+        for i, pixel in enumerate(self.frame):
                 coloridx = utils.map_value(pixel, self.MINTEMP, self.MAXTEMP, 0, self.COLORDEPTH - 1)
                 coloridx = int(utils.constrain(coloridx, 0, self.COLORDEPTH - 1))
                 pixels[i] = self.colormap[coloridx]
@@ -85,7 +87,10 @@ class mlx90640:
         """
         self.__frame()
         self.__transform()
-        self.rgb_image = Image.new("RGB", (32, 24))
+        image = Image.new("RGB", (32, 24))
+        image.putdata(self.pixels)
+        self.rgb_image = image
+        del image
 
 
     def save_rgb_image(self, filename):
@@ -94,15 +99,16 @@ class mlx90640:
         Args:
             filename ([type]): [description]
         """
+        self.__create_rgb_image()
         img = self.rgb_image.transpose(Image.FLIP_TOP_BOTTOM)
         del self.rgb_image
         img = img.resize((32 * self.INTERPOLATE, 24 * self.INTERPOLATE), Image.BICUBIC)
         img.save(f"{filename}.jpg")
 
+        
+
 
 
 if __name__ == "__main__":
     mlx = mlx90640()
-    mlx.collect_raw_frame()
-    mlx.print_raw_data()
-
+    mlx.save_rgb_image("test2")
