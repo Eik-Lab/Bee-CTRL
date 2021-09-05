@@ -5,7 +5,7 @@ import board
 
 
 class TMP117:
-    def __init__(self, addresses: typing.Union[int, list[int]] ):
+    def __init__(self, addresses: typing.Union[int, list] ):
         """Initialize the sensor.
 
         Args:
@@ -24,6 +24,6 @@ class TMP117:
         return [sensor.temperature for sensor in self.sensors]
 
 if __name__ == "__main__":
-    addresses = [0x48]
+    addresses = [0x49]
     tmp117 = TMP117(addresses)
     tmp117.collect_data()

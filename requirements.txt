@@ -1,4 +1,4 @@
 adafruit-circuitpython-tmp117
 adafruit-circuitpython-mlx90640
-sparkfun-qwiic-ccs811
-
+adafruit-circuitpython-ccs811
+adafruit-circuitpython-bme280
