@@ -24,6 +24,6 @@ class TMP117:
         return [sensor.temperature for sensor in self.sensors]
 
 if __name__ == "__main__":
-    addresses = [0x49]
+    addresses = [0x48, 0x49]
     tmp117 = TMP117(addresses)
-    tmp117.collect_data()
+    print(tmp117.collect_data())

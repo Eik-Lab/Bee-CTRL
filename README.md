@@ -13,13 +13,12 @@ in a bee hive.
 This is a work in progress.
 
 # ToDo:
-- [ ] Collect Data from MLX90640
-- [ ] Save image from MLX90640
-- [ ] Collect Data from TMP1117
-- [ ] Collect Data from CCS811
-- [ ] Collect data from BME280
+- [x] Collect Data from MLX90640
+- [x] Save image from MLX90640
+- [x] Collect Data from TMP1117 (attempted with two sensors)
+- [ ] Collect Data from CCS811 WIP: Not collecting data
+- [x] Collect data from BME280
 - [ ] Collect Data from all sensors in main.py
-- [ ]
 - [ ] Create server which collects data and saves it in a csv format
 
 

@@ -3,9 +3,9 @@ import typing
 import board
 
 class BME280:
-    def __init__(self, addresses: typing.Union[int, list[int]]) -> None:
+    def __init__(self, addresses: list) -> None:
         i2c = board.I2C()
-        sensors = [adafruit_bme280.ADAFRUIT_BME_I2C(i2c, addr) for addr in addresses]
+        sensors = [adafruit_bme280.Adafruit_BME280_I2C(i2c, addr) for addr in addresses]
         self.sensors = sensors
     
     def __collect_temps(self):
@@ -22,3 +22,8 @@ class BME280:
     
     def collect_data(self):
         return self.__collect_temps(), self.__collect_pressures(), self.__collect_humidities(), self.__collect_altitudes()
+
+
+if __name__ == "__main__":
+    bme = BME280([0x77])
+    print(bme.collect_data())
