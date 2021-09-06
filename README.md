@@ -18,4 +18,8 @@ This is a work in progress.
 - [ ] Collect Data from TMP1117
 - [ ] Collect Data from CCS811
 - [ ] Collect data from BME280
-- [ ] Create server which creates 
+- [ ] Collect Data from all sensors in main.py
+- [ ]
+- [ ] Create server which collects data and saves it in a csv format
+
+
