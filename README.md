@@ -13,4 +13,9 @@ in a bee hive.
 This is a work in progress.
 
 # ToDo:
-- [ ]
+- [ ] Collect Data from MLX90640
+- [ ] Save image from MLX90640
+- [ ] Collect Data from TMP1117
+- [ ] Collect Data from CCS811
+- [ ] Collect data from BME280
+- [ ] Create server which creates 
