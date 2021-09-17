@@ -6,10 +6,11 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-bme280 = "0.2.1"
-diesel = "1.4.7"
+bme280 = {git = "https://github.com/uzaaft/bme280-rs/", package="bme280"}
+# diesel = "1.4.7"
 embedded-ccs811 = "0.2.0"
+embedded-hal = "0.2.6"
 linux-embedded-hal = "0.3.0"
 mlx9064x = "0.1.1"
 nb = "1.0.0"
-tmp117 = {git = "https://github.com/Beaudidly/tmp117/", package="tmp117"}
+tmp117 = {git = "https://github.com/uzaaft/tmp117/", package="tmp117"}
