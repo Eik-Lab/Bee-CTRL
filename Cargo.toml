@@ -10,7 +10,9 @@ bme280 = {git = "https://github.com/uzaaft/bme280-rs/", package="bme280"}
 # diesel = "1.4.7"
 embedded-ccs811 = "0.2.0"
 embedded-hal = "0.2.6"
+image = "0.23.14"
 linux-embedded-hal = "0.3.0"
-mlx9064x = "0.1.1"
+mlx9064x = {git = "https://github.com/Uzaaft/mlx9064x-rs", package = "mlx9064x"}
 nb = "1.0.0"
+palette = "0.6.0"
 tmp117 = {git = "https://github.com/uzaaft/tmp117/", package="tmp117"}
