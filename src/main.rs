@@ -30,6 +30,7 @@ fn get_refresh_rate() -> FrameRate {
     let matches = App::new("Bee-CTRL")
         .version("0.0.1")
         .about("CTRL the Bees!")
+        .author("Uzair Aftab, <uzaaft@outlook.com>")
         .arg(Arg::with_name("FRAMERATE")
         .short("rf")
         .value_name("MLX90640 framerate in HZ")
