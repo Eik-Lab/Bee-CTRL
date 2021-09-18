@@ -93,19 +93,17 @@ fn main() {
             temp2: tmp2.read().unwrap(),
             temp3: tmp3.read().unwrap(),
             temp4: tmp4.read().unwrap(),
-            bme_temp1: bme_1_measurements.temperature(),
-            bme_temp2: bme_2_measurements.temperature(),
-            pressure1: bme_1_measurements.pressure(),
-            pressure2: bme_2_measurements.pressure(),,
-            rh1:  bme_2_measurements.humidity(),
-            rh2: bme_2_measurements.humidity(),
+            bme_temp1: bme_1_measurements.temperature,
+            bme_temp2: bme_2_measurements.temperature,
+            pressure1: bme_1_measurements.pressure,
+            pressure2: bme_2_measurements.pressure,
+            rh1: bme_2_measurements.humidity,
+            rh2: bme_2_measurements.humidity,
             image_data: t_out,
         }
         .insert(&conn);
         println!("Inserted data!{:?}", measurements);
 
-        let temp = tmp.read().unwrap();
-        println!("Temperature: {}", temp);
         sleep(Duration::from_millis(1000));
     }
 }
