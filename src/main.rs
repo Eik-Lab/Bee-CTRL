@@ -12,9 +12,10 @@ use mlx9064x::{
 use tmp117::TMP117;
 extern crate tmp117;
 use crate::models::Measurement;
-
 use dotenv;
 use image;
+use std::str;
+
 use std::{
     sync::{Arc, Mutex},
     thread::sleep,
@@ -22,10 +23,23 @@ use std::{
 };
 pub mod models;
 pub mod schema;
+use std::process::Command;
+fn get_sn() -> String {
+    let output = Command::new("cat")
+        .arg("/sys/firmware/devicetree/base/serial-number")
+        .output()
+        .unwrap();
+
+    let sn = str::from_utf8(&output.stdout).unwrap();
+    return sn.to_string();
+}
 
 fn main() {
     dotenv::dotenv().ok();
     // Initialize database
+    let SN = get_sn();
+    println!("SN: {}", SN);
+
     let db_url = match std::env::var("DATABASE_URL") {
         Ok(db_url) => db_url,
         Err(_) => {
@@ -34,11 +48,12 @@ fn main() {
         }
     };
     let pool = crate::models::init_pool(&db_url);
-
+    // This can be done more elegantly
     let (tmp1, tmp2, tmp3, tmp4, mut bme280_1, mut bme280_2, mut camera) = init_sensors();
     let v = FrameRate::Half;
     println!("set_framerate: {:?}", camera.set_frame_rate(v));
 
+    // Potential one-liner?
     let bme_1_measurements = bme280_1.measure().unwrap();
     let bme_2_measurements = bme280_2.measure().unwrap();
     loop {
@@ -47,6 +62,12 @@ fn main() {
         /* TODO:
                 The camera code can be moved to a separate function. Something like:
                 fn get_image(camera: Arc<Mutex<CameraDriver<...>>>) -> Vec<f32, Global>{}
+        */
+        /*
+        TLDR of what happens below
+        The sensor creates to vectors which are the same size, but where every other pixel is filled.
+        I.e, image 1 is every odd pixel, and image 2 contains every even pixel.
+        The two loops belov makes sure that we get both "pages", before combining them
         */
         let mut temperatures1 = vec![0f32; camera.height() * camera.width()];
         let mut temperatures2 = vec![0f32; camera.height() * camera.width()];
@@ -87,7 +108,7 @@ fn main() {
         Move this to a separeate method
         */
         let measurements = Measurement {
-            pi_id: 1,
+            pi_id: SN.clone(),
             measurement_time: now,
             temp1: tmp1.read().unwrap(),
             temp2: tmp2.read().unwrap(),

@@ -1,6 +1,6 @@
 CREATE TABLE measurements
 (
- pi_id int NOT NULL,
+ pi_id char NOT NULL,
  measurement_time timestamptz NOT NULL,
  temp1            float4 NOT NULL,
  temp2            float4 NOT NULL,

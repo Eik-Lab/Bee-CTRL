@@ -23,7 +23,7 @@ pub fn init_pool(db_url: &str) -> Pool {
 )]
 #[primary_key(pi_id, measurement_time)]
 pub struct Measurement {
-    pub pi_id: i32,
+    pub pi_id: String,
     pub measurement_time: DateTime<Utc>,
     pub temp1: f32,
     pub temp2: f32,
