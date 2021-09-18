@@ -12,8 +12,6 @@ CREATE TABLE measurements
  pressure2        float4 NOT NULL,
  RH1              float4 NOT NULL,
  RH2              float4 NOT NULL,
- Altitude1        float4 NOT NULL,
- Altitude2        float4 NOT NULL,
- Image_name       float4[] NOT NULL,
+ Image_data       float4[] NOT NULL,
 PRIMARY KEY (pi_id, measurement_time)
 );

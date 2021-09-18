@@ -12,8 +12,6 @@ table! {
         pressure2 -> Float4,
         rh1 -> Float4,
         rh2 -> Float4,
-        altitude1 -> Float4,
-        altitude2 -> Float4,
-        image_name -> Array<Float4>,
+        image_data -> Array<Float4>,
     }
 }

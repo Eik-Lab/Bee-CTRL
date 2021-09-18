@@ -35,17 +35,19 @@ fn main() {
     };
     let pool = crate::models::init_pool(&db_url);
 
-    let (tmp, mut bme280, mut camera) = init_sensors();
-    let temp = tmp.read().unwrap();
+    let (tmp1, tmp2, tmp3, tmp4, mut bme280_1, mut bme280_2, mut camera) = init_sensors();
     let v = FrameRate::Half;
     println!("set_framerate: {:?}", camera.set_frame_rate(v));
 
-    println!("Temperature: {}", temp);
-    let measurements = bme280.measure().unwrap();
-    println!("Relative Humidity = {}%", measurements.humidity);
-
+    let bme_1_measurements = bme280_1.measure().unwrap();
+    let bme_2_measurements = bme280_2.measure().unwrap();
     loop {
         // let mut temperatures = Vec::new();
+
+        /* TODO:
+                The camera code can be moved to a separate function. Something like:
+                fn get_image(camera: Arc<Mutex<CameraDriver<...>>>) -> Vec<f32, Global>{}
+        */
         let mut temperatures1 = vec![0f32; camera.height() * camera.width()];
         let mut temperatures2 = vec![0f32; camera.height() * camera.width()];
         let page = loop {
@@ -53,7 +55,7 @@ fn main() {
                 camera.generate_image_if_ready(&mut temperatures1).unwrap();
                 break page;
             }
-            sleep(Duration::from_millis(100));
+            sleep(Duration::from_millis(10));
         };
 
         loop {
@@ -63,7 +65,7 @@ fn main() {
                     break;
                 }
             }
-            sleep(Duration::from_millis(100));
+            sleep(Duration::from_millis(10));
         }
 
         let t_out = temperatures1
@@ -81,23 +83,23 @@ fn main() {
         );
 
         let conn = pool.get().unwrap();
-
+        /* TODO:
+        Move this to a separeate method
+        */
         let measurements = Measurement {
             pi_id: 1,
             measurement_time: now,
-            temp1: 1.0,
-            temp2: 0.2,
-            temp3: 0.3,
-            temp4: 0.4,
-            bme_temp1: 0.5,
-            bme_temp2: 0.6,
-            pressure1: 0.1013,
-            pressure2: 0.1023,
-            rh1: 69.420,
-            rh2: 420.69,
-            altitude1: 0.100,
-            altitude2: 0.200,
-            image_name: t_out,
+            temp1: tmp1.read().unwrap(),
+            temp2: tmp2.read().unwrap(),
+            temp3: tmp3.read().unwrap(),
+            temp4: tmp4.read().unwrap(),
+            bme_temp1: bme_1_measurements.temperature(),
+            bme_temp2: bme_2_measurements.temperature(),
+            pressure1: bme_1_measurements.pressure(),
+            pressure2: bme_2_measurements.pressure(),,
+            rh1:  bme_2_measurements.humidity(),
+            rh2: bme_2_measurements.humidity(),
+            image_data: t_out,
         }
         .insert(&conn);
         println!("Inserted data!{:?}", measurements);
@@ -119,16 +121,25 @@ fn print_temperatures(temperatures: &[f32], width: usize) {
 
 fn init_sensors() -> (
     TMP117<I2cdev>,
+    TMP117<I2cdev>,
+    TMP117<I2cdev>,
+    TMP117<I2cdev>,
+    BME280<I2cdev, Delay>,
     BME280<I2cdev, Delay>,
     CameraDriver<Mlx90640, Mlx90640Calibration, I2cdev, 24_usize, 32_usize, 1536_usize>,
 ) {
     let i2c_bus = Arc::new(Mutex::new(I2cdev::new("/dev/i2c-1").unwrap()));
-    let tmp = tmp117::TMP117::new_default(i2c_bus.clone());
-    let mut bme280 = BME280::new_primary(i2c_bus.clone(), Delay);
-    bme280.init().unwrap();
+    let tmp1 = tmp117::TMP117::new_default(i2c_bus.clone());
+    let tmp2 = tmp117::TMP117::new_default(i2c_bus.clone());
+    let tmp3 = tmp117::TMP117::new_default(i2c_bus.clone());
+    let tmp4 = tmp117::TMP117::new_default(i2c_bus.clone());
+    let mut bme280_1 = BME280::new_primary(i2c_bus.clone(), Delay);
+    let mut bme280_2 = BME280::new_primary(i2c_bus.clone(), Delay);
+    bme280_1.init().unwrap();
+    bme280_2.init().unwrap();
     let camera_address = 0x33;
     let mut camera = Mlx90640Driver::new(i2c_bus.clone(), camera_address).unwrap();
-    (tmp, bme280, camera)
+    (tmp1, tmp2, tmp3, tmp4, bme280_1, bme280_2, camera)
 }
 
 fn save_image(buffer: &Vec<f32>, width: usize, filename: &str) {

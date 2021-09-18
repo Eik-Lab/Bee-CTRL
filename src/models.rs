@@ -35,9 +35,7 @@ pub struct Measurement {
     pub pressure2: f32,
     pub rh1: f32,
     pub rh2: f32,
-    pub altitude1: f32,
-    pub altitude2: f32,
-    pub image_name: Vec<f32>,
+    pub image_data: Vec<f32>,
 }
 
 impl Measurement {
