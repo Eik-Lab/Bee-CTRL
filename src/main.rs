@@ -17,7 +17,7 @@ use dotenv;
 use image;
 use std::{
     sync::{Arc, Mutex},
-    thread::{sleep, sleep_ms},
+    thread::sleep,
     time::Duration,
 };
 pub mod models;
@@ -104,7 +104,7 @@ fn main() {
 
         let temp = tmp.read().unwrap();
         println!("Temperature: {}", temp);
-        sleep_ms(1000);
+        sleep(Duration::from_millis(1000));
     }
 }
 
@@ -128,7 +128,7 @@ fn init_sensors() -> (
     bme280.init().unwrap();
     let camera_address = 0x33;
     let mut camera = Mlx90640Driver::new(i2c_bus.clone(), camera_address).unwrap();
-    return (tmp, bme280, camera);
+    (tmp, bme280, camera)
 }
 
 fn save_image(buffer: &Vec<f32>, width: usize, filename: &str) {
