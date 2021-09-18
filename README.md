@@ -27,20 +27,25 @@ cargo install diesel_cli --no-default-features --features postgres
 ```
 Grab your postgres url from Heroku, and copy it into your `.env` file. It will look something like this inside the `.env` file:
 ```
-DATABASE_URL=postgres://username:password@localhost/diesel_demo```
+DATABASE_URL=postgres://username:password@localhost/diesel_demo
+```
 
+Now, you can run `cargo run migration` to setup your database. When this is done, you can compile the code by running:
+```
+cargo run 
+```
+This will run the code with the default refreshrate.  
+To only build the binary, run: 
+```
+cargo build
+```
+To change your refreshrate, you can either
+do it the following way when using cargo run:
+``` 
+cargo run -- -r 1 # To set the refresh rate as 1HZ
+```
+Or if you built the binary:
+```
+./target/release/bee_ctrl -r 1
 
-# ToDo:
-- [x] Find library for BME280
-- [x] Find library for MLX90640
-- [x] Find library for TMP1117
-- [x] Find library for CCS811 
-- [x] Collect Data from MLX90640
-- [ ] Save image from MLX90640
-- [ ] Collect Data from TMP1117 (attempted with two sensors)
-- [ ] Collect Data from CCS811 WIP: Not collecting data
-- [x] Collect data from BME280
-- [ ] Collect Data from all sensors in main.rs
-- [ ] Create server which collects data and saves it in a csv format
-
-
+```
