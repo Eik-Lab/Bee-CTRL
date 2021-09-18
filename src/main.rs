@@ -23,22 +23,44 @@ use std::{
 };
 pub mod models;
 pub mod schema;
+use clap::{App, Arg, SubCommand};
 use std::process::Command;
-fn get_sn() -> String {
-    let output = Command::new("cat")
-        .arg("/sys/firmware/devicetree/base/serial-number")
-        .output()
-        .unwrap();
 
-    let sn = str::from_utf8(&output.stdout).unwrap();
-    return sn.to_string();
+fn get_refresh_rate() -> FrameRate {
+    let matches = App::new("Bee-CTRL")
+        .version("0.0.1")
+        .about("CTRL the Bees!")
+        .arg(Arg::with_name("FRAMERATE")
+        .short("rf")
+        .value_name("MLX90640 framerate in HZ")
+        .help("Set a custom framerate in HZ Defaults to 0.5HZ . Accepted HZ are 0.5, 1, 2,4,8,16,32,64"))
+    .get_matches();
+
+    let fps = matches.value_of("framerate").unwrap_or("O.5");
+    println!("{}", fps);
+    let framerate = match fps {
+        "0.5" => FrameRate::Half,
+        "1" => FrameRate::One,
+        "2" => FrameRate::Two,
+        "4" => FrameRate::Four,
+        "8" => FrameRate::Eight,
+        "16" => FrameRate::Sixteen,
+        "32" => FrameRate::ThirtyTwo,
+        "64" => FrameRate::SixtyFour,
+        _ => FrameRate::Half,
+    };
+    println!("Refresh was set to: {}", fps);
+    framerate
 }
 
 fn main() {
     dotenv::dotenv().ok();
+
+    let v = get_refresh_rate();
     // Initialize database
-    let SN = get_sn();
-    println!("SN: {}", SN);
+    let sn = get_sn();
+    println!("SN: {}", sn);
+    // get_refresh_rate();
 
     let db_url = match std::env::var("DATABASE_URL") {
         Ok(db_url) => db_url,
@@ -50,7 +72,6 @@ fn main() {
     let pool = crate::models::init_pool(&db_url);
     // This can be done more elegantly
     let (tmp1, tmp2, tmp3, tmp4, mut bme280_1, mut bme280_2, mut camera) = init_sensors();
-    let v = FrameRate::Half;
     println!("set_framerate: {:?}", camera.set_frame_rate(v));
 
     // Potential one-liner?
@@ -108,7 +129,7 @@ fn main() {
         Move this to a separeate method
         */
         let measurements = Measurement {
-            pi_id: SN.clone(),
+            pi_id: 1.to_string(),
             measurement_time: now,
             temp1: tmp1.read().unwrap(),
             temp2: tmp2.read().unwrap(),
@@ -136,6 +157,16 @@ fn print_temperatures(temperatures: &[f32], width: usize) {
         }
         print!("{:4.2}  ", temperature);
     }
+}
+
+fn get_sn() -> String {
+    let output = Command::new("cat")
+        .arg("/sys/firmware/devicetree/base/serial-number")
+        .output()
+        .unwrap();
+
+    let sn = str::from_utf8(&output.stdout).unwrap();
+    return sn.to_string();
 }
 
 fn init_sensors() -> (
