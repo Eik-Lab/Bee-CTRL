@@ -3,16 +3,18 @@ extern crate diesel;
 #[macro_use]
 extern crate serde_derive;
 
-use bme280::{Measurements, BME280};
+use bme280::BME280;
 use linux_embedded_hal::{Delay, I2cdev};
-use mlx9064x::{CameraDriver, FrameRate, Mlx90640Driver, mlx90640::{Mlx90640, Mlx90640Calibration}};
+use mlx9064x::{
+    mlx90640::{Mlx90640, Mlx90640Calibration},
+    CameraDriver, FrameRate, Mlx90640Driver,
+};
 use tmp117::TMP117;
 extern crate tmp117;
 use crate::models::Measurement;
-use chrono;
+
 use dotenv;
-use image::{self, ImageBuffer};
-use palette::Srgb;
+use image;
 use std::{
     sync::{Arc, Mutex},
     thread::{sleep, sleep_ms},
@@ -36,8 +38,7 @@ fn main() {
     let (tmp, mut bme280, mut camera) = init_sensors();
     let temp = tmp.read().unwrap();
     let v = FrameRate::Half;
-    println!("set_framerate: {:?}", 
-    camera.set_frame_rate(v));
+    println!("set_framerate: {:?}", camera.set_frame_rate(v));
 
     println!("Temperature: {}", temp);
     let measurements = bme280.measure().unwrap();
@@ -50,13 +51,13 @@ fn main() {
         let page = loop {
             if let Ok(Some(page)) = camera.data_available() {
                 camera.generate_image_if_ready(&mut temperatures1).unwrap();
-                break page
+                break page;
             }
             sleep(Duration::from_millis(100));
         };
 
         loop {
-            if let Ok(Some(new_page) ) = camera.data_available() {
+            if let Ok(Some(new_page)) = camera.data_available() {
                 if new_page != page {
                     camera.generate_image_if_ready(&mut temperatures2).unwrap();
                     break;
@@ -64,11 +65,13 @@ fn main() {
             }
             sleep(Duration::from_millis(100));
         }
-        
-        let t_out = temperatures1.into_iter().zip(temperatures2.into_iter()).map( |(v1, v2)| {
-            v1.max(v2)
-        }).collect();
-        
+
+        let t_out = temperatures1
+            .into_iter()
+            .zip(temperatures2.into_iter())
+            .map(|(v1, v2)| v1.max(v2))
+            .collect();
+
         let now = chrono::Utc::now();
         // Save_image does not consume the image, but Measurement{} does
         save_image(
