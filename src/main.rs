@@ -132,8 +132,8 @@ fn init_sensors() -> (
 }
 
 fn save_image(buffer: &Vec<f32>, width: usize, filename: &str) {
-    let min = buffer.iter().cloned().fold(0. / 0., f32::min);
-    let max = buffer.iter().cloned().fold(0. / 0., f32::max);
+    let min = buffer.iter().cloned().fold(f32::NAN, f32::min);
+    let max = buffer.iter().cloned().fold(f32::NAN, f32::max);
     let mut out_image: Vec<u8> = Vec::new();
     for v in buffer {
         out_image.push((((v - min) / (max - min)) * 256_f32) as u8);
