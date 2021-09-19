@@ -180,10 +180,10 @@ fn init_sensors() -> (
     CameraDriver<Mlx90640, Mlx90640Calibration, I2cdev, 24_usize, 32_usize, 1536_usize>,
 ) {
     let i2c_bus = Arc::new(Mutex::new(I2cdev::new("/dev/i2c-1").unwrap()));
-    let tmp1 = tmp117::TMP117::new_default(i2c_bus.clone());
-    let tmp2 = tmp117::TMP117::new_default(i2c_bus.clone());
-    let tmp3 = tmp117::TMP117::new_default(i2c_bus.clone());
-    let tmp4 = tmp117::TMP117::new_default(i2c_bus.clone());
+    let tmp1 = tmp117::TMP117::primary_default(i2c_bus.clone());
+    let tmp2 = tmp117::TMP117::secondary_default(i2c_bus.clone());
+    let tmp3 = tmp117::TMP117::tertiary_default(i2c_bus.clone());
+    let tmp4 = tmp117::TMP117::quaternary_default(i2c_bus.clone());
     let mut bme280_1 = BME280::new_primary(i2c_bus.clone(), Delay);
     let mut bme280_2 = BME280::new_primary(i2c_bus.clone(), Delay);
     bme280_1.init().unwrap();
