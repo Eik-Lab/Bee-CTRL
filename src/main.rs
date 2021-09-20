@@ -12,8 +12,6 @@ use mlx9064x::{
 use tmp117::TMP117;
 extern crate tmp117;
 use crate::models::Measurement;
-use dotenv;
-use image;
 use std::str;
 
 use std::{
@@ -23,7 +21,7 @@ use std::{
 };
 pub mod models;
 pub mod schema;
-use clap::{App, Arg, SubCommand};
+use clap::{App, Arg};
 use std::process::Command;
 
 fn get_refresh_rate() -> FrameRate {
