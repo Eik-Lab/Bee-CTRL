@@ -147,7 +147,7 @@ fn main() {
         .insert(&conn);
         println!("Inserted data!{:?}", measurements);
 
-        sleep(Duration::from_millis(1000));
+        sleep(Duration::from_millis(3000000));
     }
 }
 
@@ -185,7 +185,7 @@ fn init_sensors() -> (
     let tmp3 = tmp117::TMP117::tertiary_default(i2c_bus.clone());
     let tmp4 = tmp117::TMP117::quaternary_default(i2c_bus.clone());
     let mut bme280_1 = BME280::new_primary(i2c_bus.clone(), Delay);
-    let mut bme280_2 = BME280::new_primary(i2c_bus.clone(), Delay);
+    let mut bme280_2 = BME280::new_secondary(i2c_bus.clone(), Delay);
     bme280_1.init().unwrap();
     bme280_2.init().unwrap();
     let camera_address = 0x33;
