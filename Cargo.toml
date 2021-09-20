@@ -16,6 +16,7 @@ embedded-hal = "0.2.6"
 image = "0.23.14"
 linux-embedded-hal = "0.3.0"
 mlx9064x = {git = "https://github.com/Uzaaft/mlx9064x-rs", package = "mlx9064x"}
+ms-converter = "1.4.0"
 nb = "1.0.0"
 # palette = "0.6.0"
 serde = "1.0.130"
