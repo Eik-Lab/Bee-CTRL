@@ -145,7 +145,7 @@ fn main() {
         .insert(&conn);
         println!("Inserted data!{:?}", measurements);
 
-        sleep(Duration::from_millis(3000000));
+        sleep(Duration::from_millis(1800000));
     }
 }
 
