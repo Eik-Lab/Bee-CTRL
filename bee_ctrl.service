@@ -1,0 +1,15 @@
+[Unit]
+Description=bee_ctrl
+After=network.target
+
+[Service]
+ExecStart=/opt/bee_ctrl/bee_ctrl
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=process
+IgnoreSIGPIPE=true
+Restart=always
+RestartSec=3
+Type=simple
+
+[Install]
+WantedBy=multi-user.target
