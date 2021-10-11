@@ -121,9 +121,10 @@ fn main() {
             rh2: bme_2_measurements.humidity,
             image_data: t_out,
         };
+        //println!("Posted data!{:?}", measurements);
         let client = reqwest::blocking::Client::new();
         let res = client
-            .post("100.72.170.88:8080/data")
+            .post("http://100.72.170.88:8080/data")
             .json(&measurements)
             .send();
         println!("{:?}", res);
