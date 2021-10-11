@@ -105,17 +105,7 @@ fn main() {
             .collect();
 
         let now = chrono::Utc::now();
-        // Save_image does not consume the image, but Measurement{} does
-        /*save_image(
-            &t_out,
-            camera.width(),
-            format!("/home/pi/images/{}.png", now).as_ref(),
-        );
-        */
 
-        /* TODO:
-        Move this to a separeate method
-        */
         let measurements = Measurement {
             pi_id: 1.to_string(),
             measurement_time: now,
@@ -131,13 +121,12 @@ fn main() {
             rh2: bme_2_measurements.humidity,
             image_data: t_out,
         };
-        println!("Posted data!{:?}", measurements);
         let client = reqwest::blocking::Client::new();
         let res = client
             .post("100.72.170.88:8080/data")
             .json(&measurements)
             .send();
-
+        println!("{:?}", res);
         sleep(Duration::from_millis(1800000));
     }
 }
@@ -183,20 +172,3 @@ fn init_sensors() -> (
     let mut camera = Mlx90640Driver::new(i2c_bus.clone(), camera_address).unwrap();
     (tmp1, tmp2, tmp3, tmp4, bme280_1, bme280_2, camera)
 }
-/*
-fn save_image(buffer: &Vec<f32>, width: usize, filename: &str) {
-    let min = buffer.iter().cloned().fold(f32::NAN, f32::min);
-    let max = buffer.iter().cloned().fold(f32::NAN, f32::max);
-    let mut out_image: Vec<u8> = Vec::new();
-    for v in buffer {
-        out_image.push((((v - min) / (max - min)) * 256_f32) as u8);
-    }
-    image::save_buffer(
-        filename,
-        &out_image,
-        width as u32,
-        (buffer.len() / width) as u32,
-        image::ColorType::L8,
-    )
-    .unwrap();
-}*/
