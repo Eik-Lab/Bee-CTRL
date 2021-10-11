@@ -14,7 +14,7 @@ dotenv = "0.15.0"
 #image = {version = "0.23.14", features = ["rgb"]}
 linux-embedded-hal = "0.3.0"
 mlx9064x = {git = "https://github.com/Uzaaft/mlx9064x-rs", package = "mlx9064x"}
-reqwest = {version = "0.11.5", features = ["json", "blocking"]}
+reqwest = {version = "0.11.5", features = ["json", "blocking"], default-features = false}
 # nb = "1.0.0"
 # palette = "0.6.0"
 serde = "1.0.130"
