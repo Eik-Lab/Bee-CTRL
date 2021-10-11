@@ -106,11 +106,12 @@ fn main() {
 
         let now = chrono::Utc::now();
         // Save_image does not consume the image, but Measurement{} does
-        save_image(
+        /*save_image(
             &t_out,
             camera.width(),
             format!("/home/pi/images/{}.png", now).as_ref(),
         );
+        */
 
         /* TODO:
         Move this to a separeate method
@@ -182,7 +183,7 @@ fn init_sensors() -> (
     let mut camera = Mlx90640Driver::new(i2c_bus.clone(), camera_address).unwrap();
     (tmp1, tmp2, tmp3, tmp4, bme280_1, bme280_2, camera)
 }
-
+/*
 fn save_image(buffer: &Vec<f32>, width: usize, filename: &str) {
     let min = buffer.iter().cloned().fold(f32::NAN, f32::min);
     let max = buffer.iter().cloned().fold(f32::NAN, f32::max);
@@ -198,4 +199,4 @@ fn save_image(buffer: &Vec<f32>, width: usize, filename: &str) {
         image::ColorType::L8,
     )
     .unwrap();
-}
+}*/
