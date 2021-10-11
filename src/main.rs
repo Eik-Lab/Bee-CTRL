@@ -1,6 +1,4 @@
 #[macro_use]
-extern crate diesel;
-#[macro_use]
 extern crate serde_derive;
 
 use bme280::BME280;
@@ -12,7 +10,7 @@ use mlx9064x::{
 use tmp117::TMP117;
 extern crate tmp117;
 use crate::models::Measurement;
-use std::str;
+use std::{fmt::format, str};
 
 use std::{
     sync::{Arc, Mutex},
@@ -20,7 +18,6 @@ use std::{
     time::Duration,
 };
 pub mod models;
-pub mod schema;
 use clap::{App, Arg};
 use std::process::Command;
 
@@ -29,6 +26,7 @@ fn get_refresh_rate() -> FrameRate {
         .version("0.0.1")
         .about("CTRL the Bees!")
         .author("Uzair Aftab, <uzaaft@outlook.com>")
+        .author("B dust")
         .arg(Arg::with_name("FRAMERATE")
         .short("rf")
         .value_name("MLX90640 framerate in HZ")
@@ -59,16 +57,7 @@ fn main() {
     // Initialize database
     let sn = get_sn();
     println!("SN: {}", sn);
-    // get_refresh_rate();
 
-    let db_url = match std::env::var("DATABASE_URL") {
-        Ok(db_url) => db_url,
-        Err(_) => {
-            println!("DATABASE_URL not set, creating empty container");
-            panic!()
-        }
-    };
-    let pool = crate::models::init_pool(&db_url);
     // This can be done more elegantly
     let (tmp1, tmp2, tmp3, tmp4, mut bme280_1, mut bme280_2, mut camera) = init_sensors();
     println!("set_framerate: {:?}", camera.set_frame_rate(v));
@@ -123,7 +112,6 @@ fn main() {
             format!("/home/pi/images/{}.png", now).as_ref(),
         );
 
-        let conn = pool.get().unwrap();
         /* TODO:
         Move this to a separeate method
         */
@@ -141,9 +129,13 @@ fn main() {
             rh1: bme_2_measurements.humidity,
             rh2: bme_2_measurements.humidity,
             image_data: t_out,
-        }
-        .insert(&conn);
-        println!("Inserted data!{:?}", measurements);
+        };
+        println!("Posted data!{:?}", measurements);
+        let client = reqwest::blocking::Client::new();
+        let res = client
+            .post("100.72.170.88:8080/data")
+            .json(&measurements)
+            .send();
 
         sleep(Duration::from_millis(1800000));
     }
