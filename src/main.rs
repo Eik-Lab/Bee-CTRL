@@ -114,7 +114,7 @@ fn main() {
 
         let now = chrono::Utc::now();
         let measurements = Measurement {
-            pi_id: serial,
+            pi_id: serial.clone(),
             measurement_time: now,
             temp1: tmp1.read().unwrap(),
             temp2: tmp2.read().unwrap(),
