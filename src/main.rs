@@ -106,7 +106,7 @@ fn main() {
 
         let now = chrono::Utc::now();
         let measurements = Measurement {
-            pi_id: sn.to_string(),
+            pi_id: sn,
             measurement_time: now,
             temp1: tmp1.read().unwrap(),
             temp2: tmp2.read().unwrap(),
