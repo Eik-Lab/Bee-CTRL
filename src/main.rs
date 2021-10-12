@@ -114,7 +114,7 @@ fn main() {
 
         let now = chrono::Utc::now();
         let measurements = Measurement {
-            pi_id: serial.clone(),
+            pi_id: sn.clone(),
             measurement_time: now,
             temp1: tmp1.read().unwrap(),
             temp2: tmp2.read().unwrap(),
@@ -152,9 +152,13 @@ fn get_sn() -> String {
         .arg("/sys/firmware/devicetree/base/serial-number")
         .output()
         .unwrap();
-
-    let sn = str::from_utf8(&output.stdout).unwrap();
-    return sn.to_string();
+    let mut answer = String::from_utf8_lossy(&output.stdout).to_string();
+    answer.pop();
+    println!("{:?}", answer);
+    //let sn = std::ffi::CString::from(output.stdout);
+    //println!("Serial Number:{:?}", sn);
+    //return sn.to_str().unwrap().to_string();
+    return answer;
 }
 
 fn init_sensors() -> (
