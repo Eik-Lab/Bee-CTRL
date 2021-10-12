@@ -10,7 +10,7 @@ use mlx9064x::{
 use tmp117::TMP117;
 extern crate tmp117;
 use crate::models::Measurement;
-use std::str;
+use std::{fmt::format, str};
 
 use std::{
     sync::{Arc, Mutex},
@@ -26,7 +26,6 @@ fn get_refresh_rate() -> FrameRate {
         .version("0.0.1")
         .about("CTRL the Bees!")
         .author("Uzair Aftab, <uzaaft@outlook.com>")
-        .author("B dust")
         .arg(Arg::with_name("FRAMERATE")
         .short("rf")
         .value_name("MLX90640 framerate in HZ")
@@ -52,7 +51,14 @@ fn get_refresh_rate() -> FrameRate {
 
 fn main() {
     dotenv::dotenv().ok();
-
+    let api_url = match std::env::var("API_URL") {
+        Ok(api_url) => api_url,
+        Err(_) => {
+            println!("API_URL not set");
+            panic!()
+        }
+    };
+    let data_endpoint = format!("{}/data", api_url);
     let v = get_refresh_rate();
     // Initialize database
     let sn = get_sn();
@@ -71,12 +77,6 @@ fn main() {
         /* TODO:
                 The camera code can be moved to a separate function. Something like:
                 fn get_image(camera: Arc<Mutex<CameraDriver<...>>>) -> Vec<f32, Global>{}
-        */
-        /*
-        TLDR of what happens below
-        The sensor creates to vectors which are the same size, but where every other pixel is filled.
-        I.e, image 1 is every odd pixel, and image 2 contains every even pixel.
-        The two loops below makes sure that we get both "pages", before combining them
         */
         let mut temperatures1 = vec![0f32; camera.height() * camera.width()];
         let mut temperatures2 = vec![0f32; camera.height() * camera.width()];
@@ -105,7 +105,6 @@ fn main() {
             .collect();
 
         let now = chrono::Utc::now();
-
         let measurements = Measurement {
             pi_id: 1.to_string(),
             measurement_time: now,
@@ -123,7 +122,7 @@ fn main() {
         };
         let client = reqwest::blocking::Client::new();
         let res = client
-            .post("http://100.72.170.88:8080/data")
+            .post(data_endpoint.clone())
             .json(&measurements)
             .send();
         println!("{:?}", res);
