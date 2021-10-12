@@ -3,8 +3,8 @@ Description=bee_ctrl
 After=network.target
 
 [Service]
-WorkingDirectory=/home/pi/Bee_CTRL/target/release/Bee-CTRl
-ExecStart=/opt/bee_ctrl/bee_ctrl
+WorkingDirectory=/home/pi/Bee_CTRL/
+ExecStart=/home/pi/Bee_CTRL/target/release/Bee-CTRl
 ExecReload=/bin/kill -HUP $MAINPID
 KillMode=process
 IgnoreSIGPIPE=true
