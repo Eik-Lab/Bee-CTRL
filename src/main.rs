@@ -10,7 +10,6 @@ use mlx9064x::{
 use tmp117::TMP117;
 extern crate tmp117;
 use crate::models::Measurement;
-use std::{fmt::format, str};
 
 use std::{
     sync::{Arc, Mutex},
@@ -33,7 +32,6 @@ fn get_refresh_rate() -> FrameRate {
     .get_matches();
 
     let fps = matches.value_of("framerate").unwrap_or("O.5");
-    println!("{}", fps);
     let framerate = match fps {
         "0.5" => FrameRate::Half,
         "1" => FrameRate::One,
@@ -55,13 +53,6 @@ fn main() {
         Ok(api_url) => api_url,
         Err(_) => {
             println!("API_URL not set");
-            panic!()
-        }
-    };
-    let serial = match std::env::var("SERIAL") {
-        Ok(serial) => serial,
-        Err(_) => {
-            println!("SERIAL not set");
             panic!()
         }
     };
