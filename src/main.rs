@@ -58,6 +58,14 @@ fn main() {
             panic!()
         }
     };
+    let serial = match std::env::var("SERIAL") {
+        Ok(serial) => serial,
+        Err(_) => {
+            println!("SERIAL not set");
+            panic!()
+        }
+    };
+
     let data_endpoint = format!("{}/data", api_url);
     let v = get_refresh_rate();
     // Initialize database
@@ -106,7 +114,7 @@ fn main() {
 
         let now = chrono::Utc::now();
         let measurements = Measurement {
-            pi_id: sn,
+            pi_id: serial,
             measurement_time: now,
             temp1: tmp1.read().unwrap(),
             temp2: tmp2.read().unwrap(),
