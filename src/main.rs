@@ -10,7 +10,7 @@ use mlx9064x::{
 use tmp117::TMP117;
 extern crate tmp117;
 use crate::models::Measurement;
-use std::{fmt::format, str};
+use std::str;
 
 use std::{
     sync::{Arc, Mutex},
@@ -76,7 +76,7 @@ fn main() {
         TLDR of what happens below
         The sensor creates to vectors which are the same size, but where every other pixel is filled.
         I.e, image 1 is every odd pixel, and image 2 contains every even pixel.
-        The two loops belov makes sure that we get both "pages", before combining them
+        The two loops below makes sure that we get both "pages", before combining them
         */
         let mut temperatures1 = vec![0f32; camera.height() * camera.width()];
         let mut temperatures2 = vec![0f32; camera.height() * camera.width()];
@@ -121,7 +121,6 @@ fn main() {
             rh2: bme_2_measurements.humidity,
             image_data: t_out,
         };
-        //println!("Posted data!{:?}", measurements);
         let client = reqwest::blocking::Client::new();
         let res = client
             .post("http://100.72.170.88:8080/data")

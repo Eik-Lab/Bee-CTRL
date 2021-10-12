@@ -4,15 +4,17 @@ version = "0.1.0"
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[profile.release]
+incremental = true
 
 [dependencies]
 bme280 = {git = "https://github.com/uzaaft/bme280-rs/", package="bme280"}
 chrono = { version = "0.4.19", features = ["serde"] }
-clap = "2.33.3"
+clap = {version = "2.33.3", default-features = false}
 dotenv = "0.15.0"
 # embedded-ccs811 = "0.2.0"
 #image = {version = "0.23.14", features = ["rgb"]}
-linux-embedded-hal = "0.3.0"
+linux-embedded-hal = {version = "0.3.0", default-features = false }
 mlx9064x = {git = "https://github.com/Uzaaft/mlx9064x-rs", package = "mlx9064x"}
 reqwest = {version = "0.11.5", features = ["json", "blocking"], default-features = false}
 # nb = "1.0.0"
