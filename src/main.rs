@@ -11,6 +11,7 @@ use tmp117::TMP117;
 extern crate tmp117;
 use crate::models::Measurement;
 
+
 use std::{
     sync::{Arc, Mutex},
     thread::sleep,
@@ -43,7 +44,6 @@ fn get_refresh_rate() -> FrameRate {
         "64" => FrameRate::SixtyFour,
         _ => FrameRate::Half,
     };
-    println!("Refresh was set to: {}", fps);
     framerate
 }
 
@@ -86,7 +86,7 @@ fn main() {
             }
             sleep(Duration::from_millis(10));
         };
-
+        
         loop {
             if let Ok(Some(new_page)) = camera.data_available() {
                 if new_page != page {
@@ -145,10 +145,6 @@ fn get_sn() -> String {
         .unwrap();
     let mut answer = String::from_utf8_lossy(&output.stdout).to_string();
     answer.pop();
-    println!("{:?}", answer);
-    //let sn = std::ffi::CString::from(output.stdout);
-    //println!("Serial Number:{:?}", sn);
-    //return sn.to_str().unwrap().to_string();
     return answer;
 }
 
@@ -171,6 +167,6 @@ fn init_sensors() -> (
     bme280_1.init().unwrap();
     bme280_2.init().unwrap();
     let camera_address = 0x33;
-    let mut camera = Mlx90640Driver::new(i2c_bus.clone(), camera_address).unwrap();
+    let camera = Mlx90640Driver::new(i2c_bus, camera_address).unwrap();
     (tmp1, tmp2, tmp3, tmp4, bme280_1, bme280_2, camera)
 }

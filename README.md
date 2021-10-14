@@ -27,11 +27,23 @@ Grab your postgres url from Heroku, and copy it into your `.env` file. It will l
 DATABASE_URL=postgres://username:password@localhost/diesel_demo
 ```
 
-Now, you can run `cargo run migration` to setup your database. When this is done, you can compile the code by running:
+Now, you can run `cargo run migration` to setup your database.
+
+Due to the limited resources on a raspberry pi, we will crosscompile the program, i.e compile it locally for another machine. To do this, we will instneed cross, which we can install by running:
 ```
-cargo run 
+cargo install cross
 ```
-This will run the code with the default refreshrate.  
+This will install the cross command line application, which we can use to compile the code for our RPI.
+
+To compile for a RPI 4, run:
+```
+cross build --target armv7-unknown-linux-gnueabihf --release
+```
+To compile for a RPI Zero w, run:
+```
+cross build --target armv-unknown-linux-gnueabih
+```
+
 To only build the binary, run: 
 ```
 cargo build
