@@ -11,7 +11,6 @@ use tmp117::TMP117;
 extern crate tmp117;
 use crate::models::Measurement;
 
-
 use std::{
     sync::{Arc, Mutex},
     thread::sleep,
@@ -86,7 +85,7 @@ fn main() {
             }
             sleep(Duration::from_millis(10));
         };
-        
+
         loop {
             if let Ok(Some(new_page)) = camera.data_available() {
                 if new_page != page {
