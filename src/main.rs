@@ -32,7 +32,8 @@ fn get_refresh_rate() -> FrameRate {
     .get_matches();
 
     let fps = matches.value_of("framerate").unwrap_or("O.5");
-    let framerate = match fps {
+    
+    match fps {
         "0.5" => FrameRate::Half,
         "1" => FrameRate::One,
         "2" => FrameRate::Two,
@@ -42,8 +43,7 @@ fn get_refresh_rate() -> FrameRate {
         "32" => FrameRate::ThirtyTwo,
         "64" => FrameRate::SixtyFour,
         _ => FrameRate::Half,
-    };
-    framerate
+    }
 }
 
 fn main() {
@@ -144,7 +144,7 @@ fn get_sn() -> String {
         .unwrap();
     let mut answer = String::from_utf8_lossy(&output.stdout).to_string();
     answer.pop();
-    return answer;
+    answer
 }
 
 fn init_sensors() -> (
